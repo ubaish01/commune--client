@@ -68,7 +68,7 @@ const Room = () => {
   });
 
   const streamSuccess = (stream) => {
-    localVideo.srcObject = stream;
+    // localVideo.srcObject = stream;
 
     audioParams = { track: stream.getAudioTracks()[0], ...audioParams };
     videoParams = { track: stream.getVideoTracks()[0], ...videoParams };
@@ -372,16 +372,24 @@ const Room = () => {
         if (track.kind == "audio") {
           newElem.setAttribute(
             "class",
-            "remoteVideo border border-red-500 hidden  rounded-md overflow-hidden md:col-span-2 col-span-3"
+            "md:col-span-2 col-span-3 relative h-96 flex items-center justify-center border-2 border-purple-500 rounded-md overflow-hidden"
           );
           //append to the audio container
-          newElem.innerHTML =
-            '<audio id="' + remoteProducerId + '" autoplay></audio>';
+          newElem.innerHTML = `
+            <div class="text-9xl uppercase aspect-square w-72 flex items-center justify-center bg-black rounded-full">
+                ${FirstCharOfFullName(producerName)}
+              </div>
+              <div class="absolute top-2 left-2 text-xl capitalize">
+                ${producerName}
+              </div>
+            <audio id=${remoteProducerId} autoplay></audio>
+            
+            `;
         } else {
           //append to the video container
           newElem.setAttribute(
             "class",
-            "md:col-span-2 col-span-3 relative border-2 relative border-white flex items-start justify-start rounded-md overflow-hidden"
+            "md:col-span-2 col-span-3 hidden relative border-2 relative border-white flex items-start justify-start rounded-md overflow-hidden"
           );
           newElem.innerHTML = `
             <video id=${remoteProducerId} autoplay class="video" ></video>
@@ -426,14 +434,27 @@ const Room = () => {
     );
   });
 
+  const FirstCharOfFullName = (name) => {
+    const list = name.split(" ");
+    let shortName = list.reduce((acc, item) => {
+      return acc + item.substring(0, 1);
+    }, "");
+
+    return shortName;
+  };
+
   return (
-    <div className="flex items-center justify-center p-8">
-      <div id="video">
-        <div className="remoteColumn ">
-          <div className="grid grid-cols-6 gap-4" id="videoContainer">
-            <div className="md:col-span-2 col-span-3 relative border-2 border-purple-500 rounded-md overflow-hidden">
-              <div className="absolute top-1 left-2">you*</div>
-              <video id="localVideo" autoPlay className="video" muted></video>
+    <div className="flex  items-center justify-center p-8">
+      <div className="w-full">
+        <div className="remoteColumn w-full">
+          <div className="grid grid-cols-6 gap-4  w-full" id="videoContainer">
+            <div className="md:col-span-2 col-span-3 relative h-96 flex items-center justify-center border-2 border-purple-500 rounded-md overflow-hidden">
+              <div className="text-9xl uppercase aspect-square w-72 flex items-center justify-center bg-black rounded-full">
+                {FirstCharOfFullName(name)}
+              </div>
+              <div className="absolute top-2 left-2 text-xl capitalize">
+                {name}
+              </div>
             </div>
           </div>
         </div>
